@@ -5,10 +5,6 @@ from django.db import models
  
  
 class Transaction(models.Model):
-    """ERD: transactions (one completed purchase by a buyer).
- 
-    Reverse relation: transaction.product_transactions
-    """
  
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     buyer = models.ForeignKey(

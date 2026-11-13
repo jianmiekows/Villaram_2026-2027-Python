@@ -6,7 +6,6 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    """Used by POST /api/register/ to create a new account."""
 
     password = serializers.CharField(
         write_only=True, validators=[validate_password], style={"input_type": "password"}
@@ -32,7 +31,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Used by GET/PATCH /api/profile/."""
 
     class Meta:
         model = User

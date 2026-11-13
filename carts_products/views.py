@@ -22,11 +22,6 @@ from .services import cart_with_items, get_user_cart
 # Products
 # --------------------------------------------------------------------------- #
 class ProductPermission(BasePermission):
-    """Anyone can browse, logged-in users can create, only staff can edit/delete.
-
-    (The ERD has no owner on Product, so editing is limited to staff.)
-    """
-
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
@@ -36,14 +31,6 @@ class ProductPermission(BasePermission):
 
 
 class ProductViewSet(viewsets.ModelViewSet):
-    """
-    GET    /api/products/            list (supports ?search=)
-    POST   /api/products/            create product        (login required)
-    GET    /api/products/<id>/       product detail
-    PATCH  /api/products/<id>/       update                (staff)
-    DELETE /api/products/<id>/       delete                (staff)
-    """
-
     serializer_class = ProductSerializer
     permission_classes = [ProductPermission]
     parser_classes = [JSONParser, MultiPartParser, FormParser]
@@ -62,15 +49,9 @@ class ProductViewSet(viewsets.ModelViewSet):
         try:
             instance.delete()
         except ProtectedError:
-            # The product was already bought, so past transactions still point to it.
-            # Hide it from the shop instead of deleting it.
             instance.is_active = False
             instance.save(update_fields=["is_active", "updated_at"])
 
-
-# --------------------------------------------------------------------------- #
-# Cart
-# --------------------------------------------------------------------------- #
 def _cart_response(cart, request, status_code=status.HTTP_200_OK):
     data = CartSerializer(cart_with_items(cart), context={"request": request}).data
     return Response(data, status=status_code)
@@ -81,10 +62,6 @@ def _touch(cart):
 
 
 class CartView(APIView):
-    """
-    GET    /api/cart/   the logged-in user's cart with items and total
-    DELETE /api/cart/   remove every item from the cart
-    """
 
     permission_classes = [IsAuthenticated]
 
@@ -99,10 +76,6 @@ class CartView(APIView):
 
 
 class CartItemCreateView(APIView):
-    """POST /api/cart/items/  {"product_id": "<uuid>", "quantity": 2}
-
-    Adds a product. If it's already in the cart, the quantity is increased.
-    """
 
     permission_classes = [IsAuthenticated]
 
@@ -128,10 +101,6 @@ class CartItemCreateView(APIView):
 
 
 class CartItemDetailView(APIView):
-    """
-    PATCH  /api/cart/items/<id>/  {"quantity": 3}   set a new quantity
-    DELETE /api/cart/items/<id>/                    remove the item
-    """
 
     permission_classes = [IsAuthenticated]
 

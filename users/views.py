@@ -9,7 +9,6 @@ User = get_user_model()
 
 
 class RegisterView(generics.CreateAPIView):
-    """POST /api/register/ - create an account (no login needed)."""
 
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -17,10 +16,6 @@ class RegisterView(generics.CreateAPIView):
 
 
 class ProfileView(generics.RetrieveUpdateAPIView):
-    """GET/PATCH /api/profile/ - the logged-in user's own profile.
-
-    Accepts multipart form data so the avatar image can be uploaded.
-    """
 
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]

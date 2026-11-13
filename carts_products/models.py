@@ -43,7 +43,7 @@ class CartProduct(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     quantity = models.PositiveIntegerField(default=1)
     cart = models.ForeignKey(
-        Cart, on_delete=models.CASCADE, related_name="carts_products"
+        Cart, on_delete=models.CASCADE, related_name="cart_products"
     )
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="cart_products"
